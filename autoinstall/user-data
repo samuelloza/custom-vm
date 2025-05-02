@@ -1,0 +1,49 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  locale: en_US
+  keyboard:
+    layout: us
+
+  network:
+    network:
+      version: 2
+      ethernets:
+        alleths:
+          match:
+            name: en*
+          dhcp4: yes
+
+  storage:
+    layout:
+      name: direct  #lvm
+
+  identity:
+    hostname: demo-hostname
+    username: demo
+    #demo
+    password: $6$K03FidmiQ0O1AnCt$h9Mj4XOMazMaSw1HtX/suyO2Y3nS0uA0iR9CBMQNOFcUlvykEdAtmR2rDuvy6koWPHUlBS99WRAg4.QmKYzj.0
+
+  ssh:
+    install-server: yes
+    allow-pw: no
+
+  packages:
+    - vim
+    - git
+    - curl
+
+  user-data:
+    runcmd:
+      - 'curl 10.0.2.2:8000/contestant-vm.tar.gz -o /tmp/contestant-vm.tar.gz'
+      - 'mkdir -p /home/demo'
+      - 'cd /home/demo && tar -xf /tmp/contestant-vm.tar.gz && chown -R demo:demo contestant-vm'
+      - 'cd /home/demo/contestant-vm && ./setup.sh'
+    users:
+      - default
+      - name: demo
+        gecos: demo
+        lock_passwd: false
+        #demo
+        passwd: $6$K03FidmiQ0O1AnCt$h9Mj4XOMazMaSw1HtX/suyO2Y3nS0uA0iR9CBMQNOFcUlvykEdAtmR2rDuvy6koWPHUlBS99WRAg4.QmKYzj.0
